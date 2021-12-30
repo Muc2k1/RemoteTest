@@ -5,18 +5,16 @@ using UnityEngine;
 public class Board : MonoBehaviour
 {
     const int NODES_IN_ROW = 9;
-    private GameObject[,] nodes = new GameObject[NODES_IN_ROW,NODES_IN_ROW];
+    private Node[,] nodes = new Node[NODES_IN_ROW,NODES_IN_ROW];
     // Start is called before the first frame update
     void Awake()
     {
         GameController.board = this.GetComponent<Board>();
-        for (int i = 0; i < NODES_IN_ROW; i++)
-        {
-            for (int j = 0; j < NODES_IN_ROW; j++)
-            {
-                nodes[i,j] = transform.GetChild(NODES_IN_ROW * i + j).gameObject;
-            }
-        }
+        initNodes();
+
+        //Debug side
+        nodes[1, 1].SetNextSpawnBall(ColorDefine.Blue);
+        nodes[1, 1].SpawnBall();
     }
 
     // Update is called once per frame
@@ -30,10 +28,25 @@ public class Board : MonoBehaviour
     }
     void SetSpawnQueue()
     {
-
+        UpdateMap();
     }
     void RouteForBall()
     {
-        
+        //lấy node đang được chọn
+        //khởi tạo (lấy dữ liệu các cung a.k.a lấy các node có chứa ball hoặc không)
+        //chọn node kế có độ dài nhỏ nhất
+        //lấy node đó xét tiếp
+        //xét đủ 81 node thì ngưng
+    }
+
+    void initNodes(){
+        for (int i = 0; i < NODES_IN_ROW; i++)
+        {
+            for (int j = 0; j < NODES_IN_ROW; j++)
+            {
+                nodes[i,j] = transform.GetChild(NODES_IN_ROW * i + j).gameObject.GetComponent<Node>();
+                nodes[i,j].SetMyPosition(i, j);
+            }
+        }
     }
 }
