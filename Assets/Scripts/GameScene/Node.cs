@@ -12,30 +12,41 @@ public class Node : MonoBehaviour
     //for route
     private Vector2 myPosition = new Vector2(-1f, -1f);
     private int crossCost = 1;
+    public int costToSelectedBall = 999;
     private Vector2 previousNode = new Vector2(-1f, -1f);
 
     private NormalBall myBall = null;
     private NormalBall nextSpawnBall = null;
-
+    void OnMouseDown()
+    {
+        if(status == STATUS.Holding)
+        {
+            Board.mainBoard.SetSelectingBall(myBall);
+        }
+        else if (Board.mainBoard.selectingBall)
+        {
+            Board.mainBoard.SetTarget(GetComponent<Node>());
+        }
+    }
     public void SetNextSpawnBall(Color ballColor)
     {
+        status = STATUS.WillSpawn;
         nextSpawnBall = BallPool.TakeMyBall();
         nextSpawnBall.SetColor(ballColor);
     }
     public void SpawnBall()
     {
+        status = STATUS.Holding;
         myBall = nextSpawnBall;
+        myBall.SetMyStand(GetComponent<Node>());
         nextSpawnBall = null;
         myBall.gameObject.SetActive(true);
         myBall.gameObject.transform.position = transform.position;
     }
-    void SetMeAsTarget()
+    public void Score()
     {
-
-    }
-    void SetMeAsSelectedBall()
-    {
-
+        status = STATUS.Idle;
+        BallPool.GiveBackBall(myBall);
     }
 
     public void SetMyPosition(int x, int y)

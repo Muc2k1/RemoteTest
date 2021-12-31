@@ -10,7 +10,7 @@ public class BallPool : MonoBehaviour
     {
         for (int i = 0; i < MAX_BALLS_IN_POOL; i++)
         {
-                Balls[i] = transform.GetChild(i).gameObject.GetComponent<NormalBall>();
+            Balls[i] = transform.GetChild(i).gameObject.GetComponent<NormalBall>();
         }
     }
 
@@ -26,9 +26,9 @@ public class BallPool : MonoBehaviour
         }
         return null;
     }
-    static public void GiveBackBall(int index)
+    static public void GiveBackBall(NormalBall Ball)
     {
-        Balls[index].status = NormalBall.STATUS.Idle;
-        Balls[index].gameObject.SetActive(false);
+        Ball.status = NormalBall.STATUS.Idle;
+        Ball.gameObject.SetActive(false);
     }
 }
