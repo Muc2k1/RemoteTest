@@ -31,40 +31,11 @@ public class Board : MonoBehaviour
             nodes[1, 0].SetNextSpawnBall(ColorDefine.Gray);
             nodes[1, 0].SpawnBall();
 
-            nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
-            nodes[3, 7].SpawnBall();
-
-            nodes[5, 4].SetNextSpawnBall(ColorDefine.Gray);
-            nodes[5, 4].SpawnBall();
+            SetSpawnQueue();
     }
     void Update()
     {
-        //Debug side Testcase1:
-            if (Input.GetKeyDown("space"))
-            {
-                nodes[1, 1].Score();
-                nodes[0, 1].Score();
-                nodes[1, 0].Score();
-                nodes[3, 7].Score();
-                nodes[5, 4].Score();
-            }
-            if (Input.GetKeyUp("space"))
-            {
-                nodes[1, 1].SetNextSpawnBall(ColorDefine.Gray);
-                nodes[1, 1].SpawnBall();
 
-                nodes[0, 1].SetNextSpawnBall(ColorDefine.Gray);
-                nodes[0, 1].SpawnBall();
-
-                nodes[1, 0].SetNextSpawnBall(ColorDefine.Gray);
-                nodes[1, 0].SpawnBall();
-
-                nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
-                nodes[3, 7].SpawnBall();
-
-                nodes[5, 4].SetNextSpawnBall(ColorDefine.Gray);
-                nodes[5, 4].SpawnBall();
-            }
     }
 
     // Update is called once per frame
@@ -74,19 +45,43 @@ public class Board : MonoBehaviour
     }
     public void SetSpawnQueue()
     {
-        Node randomNode1 = ChooseRandomIdleNode();
-        randomNode1.status = Node.STATUS.WillSpawn;
-        randomNode1.SetNextSpawnBall(ColorDefine.Gray);
-
-        randomNode1.SpawnBall();
+        for(int i = 0 ; i < 4; i++)
+        {
+            Node randomNode1 = ChooseRandomIdleNode();
+            if(i != 3)
+                randomNode1.status = Node.STATUS.WillSpawn;
+            else
+                randomNode1.status = Node.STATUS.SubSpawn;
+            randomNode1.SetNextSpawnBall(ColorDefine.Gray);
+        }
     }
-
+    public void SpawnBalls()
+    {
+        int spawnCount = 0;
+        Node SubNode = null;
+        foreach(Node node in nodes)
+        {
+            if(node.status == Node.STATUS.WillSpawn)
+            {
+                node.SpawnBall();
+                spawnCount ++;
+            }
+            if(node.status == Node.STATUS.WillSpawn)
+            {
+                SubNode = node;
+            }
+        }
+        if(spawnCount < 2)
+        {
+            SubNode.SpawnBall();
+        }
+    }
     private Node ChooseRandomIdleNode()
     {
         Node[] idleNodes = new Node[0];
         foreach(Node node in nodes)
         {
-            if(node.status == Node.STATUS.Idle)
+            if(node.status == Node.STATUS.Idle || node.status == Node.STATUS.SubSpawn)
             {
                 Array.Resize(ref idleNodes, idleNodes.Length + 1);
                 idleNodes[idleNodes.Length - 1] = node;

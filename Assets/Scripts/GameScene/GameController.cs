@@ -42,22 +42,29 @@ public class GameController : MonoBehaviour
         Node[] D1030Node = Diagonal1030Check(x_dir, y_dir);
         Node[] horNode = HorizontalCheck(x_dir, y_dir);
 
-        CheckToClearBall(verNode);
-        CheckToClearBall(D130Node);
-        CheckToClearBall(D1030Node);
-        CheckToClearBall(horNode);
+        bool _vc = CheckToClearBall(verNode);
+        bool _vd1 = CheckToClearBall(D130Node); 
+        bool _vd2 = CheckToClearBall(D1030Node);
+        bool _vh = CheckToClearBall(horNode);
+        if(_vc || _vd1 || _vd2 || _vh)
+        {
+            justUpdateNode.Score();
+        }
 
+        board.SpawnBalls();
         board.SetSpawnQueue();
     }
-    private void CheckToClearBall(Node[] nodes)
+    private bool CheckToClearBall(Node[] nodes)
     {
-        if(nodes.Length > 4)
+        if(nodes.Length > 3)
         {
             foreach( Node node in nodes)
             {
                 node.Score();
             }
+            return true;
         }
+        return false;
     }
     private Node[] Diagonal130Check(int x, int y)
     {
@@ -80,8 +87,8 @@ public class GameController : MonoBehaviour
 
     private Node[] ScoreCheck(int x, int y, int type_x, int type_y)
     {
-        Node[] straighNode = new Node[1];
-        straighNode[0] = board.nodes[x,y];
+        Node[] straighNode = new Node[0];
+        // straighNode[0] = board.nodes[x,y];
         int streak = 1;
         const int MAX_LENGTH_CHECK = 4;
 

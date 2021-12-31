@@ -52,6 +52,7 @@ public class Node : MonoBehaviour
     {
         status = STATUS.Idle;
         BallPool.GiveBackBall(myBall);
+        myBall = null;
     }
 
     public void SetMyPosition(int x, int y)
