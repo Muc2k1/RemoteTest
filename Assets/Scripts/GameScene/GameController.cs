@@ -51,11 +51,89 @@ public class GameController : MonoBehaviour
 
     private void VerticleCheck(int x, int y)
     {
+        int streak = 1;
+        int max_x_check = NODES_IN_ROW;
+        int min_x_check = 0;
 
+        if(x < NODES_IN_ROW - 5)
+        {
+            max_x_check = x + 4;
+        }
+        if(x > 5)
+        {
+            min_x_check = x - 4;
+        }
+
+        for(int i = x+1; i < max_x_check; i++)
+        {
+            if (board.nodes[i,y].GetMyBall())
+            {
+                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    streak ++;
+                }
+            }
+            else i = max_x_check - 1;
+        }
+
+        for(int i = x-1; i > min_x_check; i--)
+        {
+            if (board.nodes[i,y].GetMyBall())
+            {
+                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    streak ++;
+                }
+            }
+            else i = min_x_check + 1;
+        }
+
+        print("steak: " + streak);
     }
 
-    private void ScoreCheck()
+    private void ScoreCheck(int x, int y, int type_x /*1*/, int type_y /*0*/)
     {
+        int streak = 1;
+        int max_x_check = NODES_IN_ROW - 1;
+        int min_x_check = 0;
 
+        if(x < NODES_IN_ROW - 5)
+        {
+            max_x_check = x + 4;
+        }
+        if(x > 4)
+        {
+            min_x_check = x - 4;
+        }
+
+
+        int counter = x +1;
+
+
+        for(int i = x+1; i <= max_x_check; i++)
+        {
+            if (board.nodes[i,y].GetMyBall())
+            {
+                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    streak ++;
+                }
+            }
+            else i = max_x_check;
+        }
+
+        for(int i = x-1; i >= min_x_check; i--)
+        {
+            if (board.nodes[i,y].GetMyBall())
+            {
+                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    streak ++;
+                }
+            }
+            else i = min_x_check;
+        }
+        
+        print("steak: " + streak);
     }
 }

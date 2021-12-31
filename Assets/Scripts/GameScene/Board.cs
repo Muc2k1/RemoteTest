@@ -21,13 +21,13 @@ public class Board : MonoBehaviour
     void Start()
     {
         //Debug side Testcase1:
-            nodes[1, 1].SetNextSpawnBall(ColorDefine.Blue);
+            nodes[1, 1].SetNextSpawnBall(ColorDefine.Gray);
             nodes[1, 1].SpawnBall();
 
-            nodes[0, 1].SetNextSpawnBall(ColorDefine.Red);
+            nodes[0, 1].SetNextSpawnBall(ColorDefine.Gray);
             nodes[0, 1].SpawnBall();
 
-            nodes[1, 0].SetNextSpawnBall(ColorDefine.Yellow);
+            nodes[1, 0].SetNextSpawnBall(ColorDefine.Gray);
             nodes[1, 0].SpawnBall();
 
             nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
