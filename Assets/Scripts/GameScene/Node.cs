@@ -13,10 +13,12 @@ public class Node : MonoBehaviour
     private Vector2 myPosition = new Vector2(-1f, -1f);
     private int crossCost = 1;
     public int costToSelectedBall = 999;
-    private Vector2 previousNode = new Vector2(-1f, -1f);
+    public Vector2 previousNode = new Vector2(-1f, -1f);
 
     private NormalBall myBall = null;
     private NormalBall nextSpawnBall = null;
+
+    public bool isAcceptByRouter = false;
     void OnMouseDown()
     {
         if(status == STATUS.Holding)

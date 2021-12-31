@@ -33,6 +33,9 @@ public class Board : MonoBehaviour
 
             nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
             nodes[3, 7].SpawnBall();
+
+            nodes[5, 4].SetNextSpawnBall(ColorDefine.Gray);
+            nodes[5, 4].SpawnBall();
     }
     void Update()
     {
@@ -43,6 +46,7 @@ public class Board : MonoBehaviour
                 nodes[2, 3].Score();
                 nodes[6, 6].Score();
                 nodes[3, 7].Score();
+                nodes[5, 4].Score();
             }
             if (Input.GetKeyUp("space"))
             {
@@ -57,6 +61,9 @@ public class Board : MonoBehaviour
 
                 nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
                 nodes[3, 7].SpawnBall();
+
+                nodes[5, 4].SetNextSpawnBall(ColorDefine.Gray);
+                nodes[5, 4].SpawnBall();
             }
     }
 
@@ -80,31 +87,60 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < NODES_IN_ROW; j++)
             {
-                nodes[i,j] = transform.GetChild(NODES_IN_ROW * i + j).gameObject.GetComponent<Node>();
                 nodes[i,j].costToSelectedBall = SUPER_BIG_INT;
+                nodes[i,j].isAcceptByRouter = false;
             }
         }
-        //khởi tạo (lấy dữ liệu các cung a.k.a lấy các node có chứa ball hoặc không)
+        // //khởi tạo (lấy dữ liệu các cung a.k.a lấy các node có chứa ball hoặc không)
 
         selectingStand.costToSelectedBall = 0;     
-        print("selecting ball on: " + selectingStand.GetMyPosition().x + "," 
-            + selectingStand.GetMyPosition().y);
-        //lấy node đang được chọn
+        // //lấy node đang được chọn
+        Node currentNode = null;
+        for(int i = 0; i < NODES_IN_ROW * NODES_IN_ROW - 1; i++)
+        {
+            // print("Loop count: " + i);
+            currentNode = GetNextNodeToCheck();
+            CheckAroundNodes(currentNode);
+        }
 
-        CheckAroundNodes(selectingStand);
-        //xét x quanh node hiện tại
+        //Debug Side
+        // for (int i = 0; i < NODES_IN_ROW; i++)
+        // {
+        //     for (int j = 0; j < NODES_IN_ROW; j++)
+        //     {
+        //         print(nodes[i,j].GetMyPosition() + " take " + nodes[i,j].costToSelectedBall);
+        //     }
+        // }
+    }
+    private Node GetNextNodeToCheck()
+    {
+        Node cheapestNode = null;
+        int cheapestCost = SUPER_BIG_INT * SUPER_BIG_INT;
 
-        //chọn node kế có độ dài nhỏ nhất
-        //lấy node đó xét tiếp
-        //xét đủ 81 node thì ngưng
+        for (int i = 0; i < NODES_IN_ROW; i++)
+        {
+            for (int j = 0; j < NODES_IN_ROW; j++)
+            {
+                if (!nodes[i,j].isAcceptByRouter && nodes[i,j].costToSelectedBall < cheapestCost)
+                {
+                    cheapestNode = nodes[i,j];
+                    cheapestCost = nodes[i,j].costToSelectedBall;
+                }
+            }
+        }
+        cheapestNode.isAcceptByRouter = true;
+        return cheapestNode;
     }
     private void CostCalculate(Node node, Node nextNode)
     {
-        int newCostToSelectingBall = node.costToSelectedBall + 
-                CostToNextNode(nextNode);
+        int newCostToSelectingBall = node.costToSelectedBall + CostToNextNode(nextNode);
 
         if(nextNode.costToSelectedBall > newCostToSelectingBall)
+        {
             nextNode.costToSelectedBall = newCostToSelectingBall;
+            nextNode.previousNode = new Vector2((float)node.GetMyPosition().x, (float)node.GetMyPosition().y);
+        }
+            
     }
     private void CheckAroundNodes(Node node)
     {
@@ -115,7 +151,7 @@ public class Board : MonoBehaviour
         {
             CostCalculate(node, nodes[node_x - 1, node_y]);
         }
-        if (node_x < NODES_IN_ROW) //có node dưới
+        if (node_x < NODES_IN_ROW -1) //có node dưới
         {
             CostCalculate(node, nodes[node_x + 1, node_y]);
         }
@@ -123,7 +159,7 @@ public class Board : MonoBehaviour
         {
             CostCalculate(node, nodes[node_x, node_y - 1]);
         }
-        if (node_y < NODES_IN_ROW) //có node phải
+        if (node_y < NODES_IN_ROW -1) //có node phải
         {
             CostCalculate(node, nodes[node_x, node_y + 1]);
         }
