@@ -97,7 +97,7 @@ public class GameController : MonoBehaviour
        
         for(int i = 0; i < MAX_LENGTH_CHECK; i++)
         {
-            if(checkedNodeX > 0 && checkedNodeX < NODES_IN_ROW && checkedNodeY > 0 && checkedNodeY < NODES_IN_ROW) 
+            if(checkedNodeX > -1 && checkedNodeX < NODES_IN_ROW - 1 && checkedNodeY > -1 && checkedNodeY < NODES_IN_ROW - 1)
             {    
                 checkedNodeX += type_x;
                 checkedNodeY += type_y;

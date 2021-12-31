@@ -45,14 +45,12 @@ public class Board : MonoBehaviour
     }
     public void SetSpawnQueue()
     {
-        for(int i = 0 ; i < 4; i++)
+        for(int i = 0 ; i < 3; i++)
         {
-            Node randomNode1 = ChooseRandomIdleNode();
-            if(i != 3)
-                randomNode1.status = Node.STATUS.WillSpawn;
-            else
-                randomNode1.status = Node.STATUS.SubSpawn;
-            randomNode1.SetNextSpawnBall(ColorDefine.Gray);
+            Node randomNode = ChooseRandomIdleNode();
+            randomNode.status = Node.STATUS.WillSpawn;
+            randomNode.SetNextSpawnBall(ColorDefine.Gray);
+            print(randomNode);
         }
     }
     public void SpawnBalls()
@@ -66,15 +64,17 @@ public class Board : MonoBehaviour
                 node.SpawnBall();
                 spawnCount ++;
             }
-            if(node.status == Node.STATUS.WillSpawn)
-            {
-                SubNode = node;
-            }
         }
-        if(spawnCount < 2)
+        if (spawnCount < 3)
         {
-            SubNode.SpawnBall();
-        }
+            Node randomSubNode = ChooseRandomIdleNode();
+            randomSubNode.status = Node.STATUS.WillSpawn;
+            randomSubNode.SetNextSpawnBall(ColorDefine.Gray);
+
+            randomSubNode.SpawnBall();
+
+            print("Sub spawn trigger");
+        } 
     }
     private Node ChooseRandomIdleNode()
     {

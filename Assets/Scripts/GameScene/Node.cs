@@ -6,7 +6,7 @@ public class Node : MonoBehaviour
 {
     //color val: white, green, blue, yellow, red, orange, purple, brown, dark-green, dark-blue, nothing
     public enum STATUS {Idle, Holding, WillSpawn, SubSpawn};
-    public STATUS status;
+    public STATUS status = STATUS.Idle;
     //status val: idle, holding, willspawn, subspawn
 
     //for route
