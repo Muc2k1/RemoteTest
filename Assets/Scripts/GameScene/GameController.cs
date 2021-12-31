@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,105 +36,100 @@ public class GameController : MonoBehaviour
     {
         int x_dir = (int)justUpdateNode.GetMyPosition().x;
         int y_dir = (int)justUpdateNode.GetMyPosition().y;
-        DiagonalCheck(x_dir, y_dir);
-        HorizontalCheck(x_dir, y_dir);
-        VerticleCheck(x_dir, y_dir);
+
+        Node[] verNode = VerticleCheck(x_dir, y_dir);
+        Node[] D130Node = Diagonal130Check(x_dir, y_dir);
+        Node[] D1030Node = Diagonal1030Check(x_dir, y_dir);
+        Node[] horNode = HorizontalCheck(x_dir, y_dir);
+
+        CheckToClearBall(verNode);
+        CheckToClearBall(D130Node);
+        CheckToClearBall(D1030Node);
+        CheckToClearBall(horNode);
+
+        board.SetSpawnQueue();
     }
-    private void DiagonalCheck(int x, int y)
+    private void CheckToClearBall(Node[] nodes)
     {
-
+        if(nodes.Length > 4)
+        {
+            foreach( Node node in nodes)
+            {
+                node.Score();
+            }
+        }
+    }
+    private Node[] Diagonal130Check(int x, int y)
+    {
+        return ScoreCheck(x, y, 1, 1);
+    }
+    private Node[] Diagonal1030Check(int x, int y)
+    {
+        return ScoreCheck(x, y, 1, -1);
     }
 
-    private void HorizontalCheck(int x, int y)
+    private Node[] HorizontalCheck(int x, int y)
     {
-
+        return ScoreCheck(x, y, 0, 1);
     }
 
-    private void VerticleCheck(int x, int y)
+    private Node[] VerticleCheck(int x, int y)
     {
+       return ScoreCheck(x, y, 1, 0);
+    }
+
+    private Node[] ScoreCheck(int x, int y, int type_x, int type_y)
+    {
+        Node[] straighNode = new Node[1];
+        straighNode[0] = board.nodes[x,y];
         int streak = 1;
-        int max_x_check = NODES_IN_ROW;
-        int min_x_check = 0;
+        const int MAX_LENGTH_CHECK = 4;
 
-        if(x < NODES_IN_ROW - 5)
+        int checkedNodeX = x;
+        int checkedNodeY = y;
+       
+        for(int i = 0; i < MAX_LENGTH_CHECK; i++)
         {
-            max_x_check = x + 4;
-        }
-        if(x > 5)
-        {
-            min_x_check = x - 4;
-        }
+            if(checkedNodeX > 0 && checkedNodeX < NODES_IN_ROW && checkedNodeY > 0 && checkedNodeY < NODES_IN_ROW) 
+            {    
+                checkedNodeX += type_x;
+                checkedNodeY += type_y;
 
-        for(int i = x+1; i < max_x_check; i++)
-        {
-            if (board.nodes[i,y].GetMyBall())
-            {
-                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if (board.nodes[checkedNodeX,checkedNodeY].GetMyBall())
                 {
-                    streak ++;
+                    if(board.nodes[checkedNodeX,checkedNodeY].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                    {
+                        Array.Resize(ref straighNode, straighNode.Length + 1);
+                        straighNode[straighNode.Length - 1] = board.nodes[checkedNodeX,checkedNodeY];
+                        streak ++;
+                    }
                 }
+                else i = MAX_LENGTH_CHECK;
             }
-            else i = max_x_check - 1;
         }
 
-        for(int i = x-1; i > min_x_check; i--)
+        checkedNodeX = x;
+        checkedNodeY = y;
+
+        for(int i = 0; i < MAX_LENGTH_CHECK; i++)
         {
-            if (board.nodes[i,y].GetMyBall())
-            {
-                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+            if(checkedNodeX > 0 && checkedNodeX < NODES_IN_ROW && checkedNodeY > 0 && checkedNodeY < NODES_IN_ROW) 
+            {    
+                checkedNodeX -= type_x;
+                checkedNodeY -= type_y;
+
+                if (board.nodes[checkedNodeX,checkedNodeY].GetMyBall())
                 {
-                    streak ++;
+                    if(board.nodes[checkedNodeX,checkedNodeY].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                    {
+                        Array.Resize(ref straighNode, straighNode.Length + 1);
+                        straighNode[straighNode.Length - 1] = board.nodes[checkedNodeX,checkedNodeY];
+                        streak ++;
+                    }
                 }
+                else i = MAX_LENGTH_CHECK;
             }
-            else i = min_x_check + 1;
         }
-
-        print("steak: " + streak);
-    }
-
-    private void ScoreCheck(int x, int y, int type_x /*1*/, int type_y /*0*/)
-    {
-        int streak = 1;
-        int max_x_check = NODES_IN_ROW - 1;
-        int min_x_check = 0;
-
-        if(x < NODES_IN_ROW - 5)
-        {
-            max_x_check = x + 4;
-        }
-        if(x > 4)
-        {
-            min_x_check = x - 4;
-        }
-
-
-        int counter = x +1;
-
-
-        for(int i = x+1; i <= max_x_check; i++)
-        {
-            if (board.nodes[i,y].GetMyBall())
-            {
-                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
-                {
-                    streak ++;
-                }
-            }
-            else i = max_x_check;
-        }
-
-        for(int i = x-1; i >= min_x_check; i--)
-        {
-            if (board.nodes[i,y].GetMyBall())
-            {
-                if(board.nodes[i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
-                {
-                    streak ++;
-                }
-            }
-            else i = min_x_check;
-        }
-        
-        print("steak: " + streak);
+        return straighNode;
     }
 }
