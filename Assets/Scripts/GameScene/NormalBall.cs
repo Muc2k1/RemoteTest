@@ -92,6 +92,9 @@ public class NormalBall : MonoBehaviour
         target = null;
         GameController.gamecontroller.CheckScore(this.myStand);
 
+        Board.mainBoard.SpawnBalls();
+        Board.mainBoard.SetSpawnQueue();
+
         //Delete below code later
         CanSelectAgain();
     }

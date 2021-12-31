@@ -51,7 +51,8 @@ public class Node : MonoBehaviour
     public void Score()
     {
         status = STATUS.Idle;
-        BallPool.GiveBackBall(myBall);
+        if(myBall)
+            BallPool.GiveBackBall(myBall);
         myBall = null;
     }
 
@@ -80,5 +81,9 @@ public class Node : MonoBehaviour
             crossCost = 999;
         else
             crossCost = 1;
+    }
+    public bool HasHolding()
+    {
+        return status == STATUS.Holding;
     }
 }

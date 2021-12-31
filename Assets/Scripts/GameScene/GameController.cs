@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     const int MAX_BALLS_CAN_CLEAR = 33;
+    const int MAX_STEP_CHECK = 4;
     public static GameController gamecontroller;
     const int NODES_IN_ROW = 9;
     public static int turn = 1; //0: waiting, 1: thinking
@@ -38,8 +39,8 @@ public class GameController : MonoBehaviour
         int y_dir = (int)justUpdateNode.GetMyPosition().y;
 
         Node[] verNode = VerticleCheck(x_dir, y_dir);
-        Node[] D130Node = Diagonal130Check(x_dir, y_dir);
-        Node[] D1030Node = Diagonal1030Check(x_dir, y_dir);
+        Node[] D130Node = Diagonal1Check(x_dir, y_dir);
+        Node[] D1030Node = Diagonal2Check(x_dir, y_dir);
         Node[] horNode = HorizontalCheck(x_dir, y_dir);
 
         bool _vc = CheckToClearBall(verNode);
@@ -50,9 +51,6 @@ public class GameController : MonoBehaviour
         {
             justUpdateNode.Score();
         }
-
-        board.SpawnBalls();
-        board.SetSpawnQueue();
     }
     private bool CheckToClearBall(Node[] nodes)
     {
@@ -66,77 +64,208 @@ public class GameController : MonoBehaviour
         }
         return false;
     }
-    private Node[] Diagonal130Check(int x, int y)
-    {
-        return ScoreCheck(x, y, 1, 1);
-    }
-    private Node[] Diagonal1030Check(int x, int y)
-    {
-        return ScoreCheck(x, y, 1, -1);
-    }
-
-    private Node[] HorizontalCheck(int x, int y)
-    {
-        return ScoreCheck(x, y, 0, 1);
-    }
-
     private Node[] VerticleCheck(int x, int y)
     {
-       return ScoreCheck(x, y, 1, 0);
+        Node[] res = new Node[0];
+        int x_step_must_check_up = MAX_STEP_CHECK;
+        int x_step_must_check_down = MAX_STEP_CHECK;
+        if(x < MAX_STEP_CHECK)
+        {
+            x_step_must_check_up = x;
+        }
+        if(x > NODES_IN_ROW - 1 - MAX_STEP_CHECK)
+        {
+            x_step_must_check_down = NODES_IN_ROW - 1 - x;
+        }
+        for(int i = 1; i <= x_step_must_check_down; i++)
+        {
+            if(board.nodes[x+i,y].HasHolding())
+            {
+                if(board.nodes[x+i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x+i,y];
+                }
+            }
+            else i = x_step_must_check_down;
+        }
+        for(int i = 1; i <= x_step_must_check_up; i++)
+        {
+            if(board.nodes[x-i,y].HasHolding())
+            {
+                if(board.nodes[x-i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x-i,y];
+                }
+            }
+            else i = x_step_must_check_up;
+        }
+        foreach(Node node in res)
+        {
+            print(node);
+        }
+        return res;
     }
-
-    private Node[] ScoreCheck(int x, int y, int type_x, int type_y)
+    private Node[] Diagonal1Check(int x, int y)
     {
-        Node[] straighNode = new Node[0];
-        // straighNode[0] = board.nodes[x,y];
-        int streak = 1;
-        const int MAX_LENGTH_CHECK = 4;
-
-        int checkedNodeX = x;
-        int checkedNodeY = y;
-       
-        for(int i = 0; i < MAX_LENGTH_CHECK; i++)
+        Node[] res = new Node[0];
+        int y_step_must_check_left = MAX_STEP_CHECK;
+        int y_step_must_check_right = MAX_STEP_CHECK;
+        if(y < MAX_STEP_CHECK)
         {
-            if(checkedNodeX > -1 && checkedNodeX < NODES_IN_ROW - 1 && checkedNodeY > -1 && checkedNodeY < NODES_IN_ROW - 1)
-            {    
-                checkedNodeX += type_x;
-                checkedNodeY += type_y;
-
-                if (board.nodes[checkedNodeX,checkedNodeY].GetMyBall())
-                {
-                    if(board.nodes[checkedNodeX,checkedNodeY].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
-                    {
-                        Array.Resize(ref straighNode, straighNode.Length + 1);
-                        straighNode[straighNode.Length - 1] = board.nodes[checkedNodeX,checkedNodeY];
-                        streak ++;
-                    }
-                }
-                else i = MAX_LENGTH_CHECK;
-            }
+            y_step_must_check_left = y;
+        }
+        if(y > NODES_IN_ROW - 1 - MAX_STEP_CHECK)
+        {
+            y_step_must_check_right = NODES_IN_ROW - 1 - y;
         }
 
-        checkedNodeX = x;
-        checkedNodeY = y;
-
-        for(int i = 0; i < MAX_LENGTH_CHECK; i++)
+        int x_step_must_check_up = MAX_STEP_CHECK;
+        int x_step_must_check_down = MAX_STEP_CHECK;
+        if(x < MAX_STEP_CHECK)
         {
-            if(checkedNodeX > 0 && checkedNodeX < NODES_IN_ROW && checkedNodeY > 0 && checkedNodeY < NODES_IN_ROW) 
-            {    
-                checkedNodeX -= type_x;
-                checkedNodeY -= type_y;
-
-                if (board.nodes[checkedNodeX,checkedNodeY].GetMyBall())
-                {
-                    if(board.nodes[checkedNodeX,checkedNodeY].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
-                    {
-                        Array.Resize(ref straighNode, straighNode.Length + 1);
-                        straighNode[straighNode.Length - 1] = board.nodes[checkedNodeX,checkedNodeY];
-                        streak ++;
-                    }
-                }
-                else i = MAX_LENGTH_CHECK;
-            }
+            x_step_must_check_up = x;
         }
-        return straighNode;
+        if(x > NODES_IN_ROW - 1 - MAX_STEP_CHECK)
+        {
+            x_step_must_check_down = NODES_IN_ROW - 1 - x;
+        }
+
+        int step_must_check_ul = Math.Min(x_step_must_check_up, y_step_must_check_left);
+        int step_must_check_dr = Math.Min(x_step_must_check_down, y_step_must_check_right);
+
+        for(int i = 1; i <= step_must_check_ul; i++)
+        {
+            if(board.nodes[x-i,y-i].HasHolding())
+            {
+                if(board.nodes[x-i,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x-i,y-i];
+                }
+            }
+            else i = step_must_check_ul;
+        }
+        for(int i = 1; i <= step_must_check_dr; i++)
+        {
+            if(board.nodes[x+i,y+i].HasHolding())
+            {
+                if(board.nodes[x+i,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x+i,y+i];
+                }
+            }
+            else i = step_must_check_dr;
+        }
+        foreach(Node node in res)
+        {
+            print(node);
+        }
+        return res;
+    }
+    private Node[] Diagonal2Check(int x, int y)
+    {
+        Node[] res = new Node[0];
+        int y_step_must_check_left = MAX_STEP_CHECK;
+        int y_step_must_check_right = MAX_STEP_CHECK;
+        if(y < MAX_STEP_CHECK)
+        {
+            y_step_must_check_left = y;
+        }
+        if(y > NODES_IN_ROW - 1 - MAX_STEP_CHECK)
+        {
+            y_step_must_check_right = NODES_IN_ROW - 1 - y;
+        }
+
+        int x_step_must_check_up = MAX_STEP_CHECK;
+        int x_step_must_check_down = MAX_STEP_CHECK;
+        if(x < MAX_STEP_CHECK)
+        {
+            x_step_must_check_up = x;
+        }
+        if(x > NODES_IN_ROW - 1 - MAX_STEP_CHECK)
+        {
+            x_step_must_check_down = NODES_IN_ROW - 1 - x;
+        }
+
+        int step_must_check_ur = Math.Min(x_step_must_check_up, y_step_must_check_right);
+        int step_must_check_dl = Math.Min(x_step_must_check_down, y_step_must_check_left);
+
+        for(int i = 1; i <= step_must_check_ur; i++)
+        {
+            if(board.nodes[x-i,y+i].HasHolding())
+            {
+                if(board.nodes[x-i,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x-i,y+i];
+                }
+            }
+            else i = step_must_check_ur;
+        }
+        for(int i = 1; i <= step_must_check_dl; i++)
+        {
+            if(board.nodes[x+i,y-i].HasHolding())
+            {
+                if(board.nodes[x+i,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x+i,y-i];
+                }
+            }
+            else i = step_must_check_dl;
+        }
+        foreach(Node node in res)
+        {
+            print(node);
+        }
+        return res;
+    }
+    private Node[] HorizontalCheck(int x, int y)
+    {
+        Node[] res = new Node[0];
+        int y_step_must_check_left = MAX_STEP_CHECK;
+        int y_step_must_check_right = MAX_STEP_CHECK;
+        if(y < MAX_STEP_CHECK)
+        {
+            y_step_must_check_left = y;
+        }
+        if(y > NODES_IN_ROW - 1 - MAX_STEP_CHECK)
+        {
+            y_step_must_check_right = NODES_IN_ROW - 1 - y;
+        }
+        for(int i = 1; i <= y_step_must_check_right; i++)
+        {
+            print("check right: " + (y+i));
+            if(board.nodes[x,y+i].HasHolding())
+            {
+                if(board.nodes[x,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x,y+i];
+                }
+            }
+            else i = y_step_must_check_right;
+        }
+        for(int i = 1; i <= y_step_must_check_left; i++)
+        {
+            print("check up left: " + (i-i));
+            if(board.nodes[x,y-i].HasHolding())
+            {
+                if(board.nodes[x,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                {
+                    Array.Resize(ref res, res.Length + 1);
+                    res[res.Length - 1] = board.nodes[x,y-i];
+                }
+            }
+            else i = y_step_must_check_left;
+        }
+        foreach(Node node in res)
+        {
+            print(node);
+        }
+        return res;
     }
 }

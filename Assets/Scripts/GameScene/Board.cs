@@ -50,17 +50,18 @@ public class Board : MonoBehaviour
             Node randomNode = ChooseRandomIdleNode();
             randomNode.status = Node.STATUS.WillSpawn;
             randomNode.SetNextSpawnBall(ColorDefine.Gray);
-            print(randomNode);
         }
     }
     public void SpawnBalls()
     {
         int spawnCount = 0;
-        Node SubNode = null;
+        Node[] spawnNodes = new Node[0];
         foreach(Node node in nodes)
         {
             if(node.status == Node.STATUS.WillSpawn)
             {
+                Array.Resize(ref spawnNodes, spawnNodes.Length + 1);
+                spawnNodes[spawnNodes.Length - 1] = node;
                 node.SpawnBall();
                 spawnCount ++;
             }
@@ -70,11 +71,14 @@ public class Board : MonoBehaviour
             Node randomSubNode = ChooseRandomIdleNode();
             randomSubNode.status = Node.STATUS.WillSpawn;
             randomSubNode.SetNextSpawnBall(ColorDefine.Gray);
-
+            Array.Resize(ref spawnNodes, spawnNodes.Length + 1);
+            spawnNodes[spawnNodes.Length - 1] = randomSubNode;
             randomSubNode.SpawnBall();
-
-            print("Sub spawn trigger");
-        } 
+        }
+        foreach(Node node in spawnNodes)
+        {
+           GameController.gamecontroller.CheckScore(node);
+        }
     }
     private Node ChooseRandomIdleNode()
     {
