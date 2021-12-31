@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,13 +22,13 @@ public class Board : MonoBehaviour
     void Start()
     {
         //Debug side Testcase1:
-            nodes[1, 1].SetNextSpawnBall(ColorDefine.Blue);
+            nodes[1, 1].SetNextSpawnBall(ColorDefine.Gray);
             nodes[1, 1].SpawnBall();
 
-            nodes[0, 1].SetNextSpawnBall(ColorDefine.Red);
+            nodes[0, 1].SetNextSpawnBall(ColorDefine.Gray);
             nodes[0, 1].SpawnBall();
 
-            nodes[1, 0].SetNextSpawnBall(ColorDefine.Yellow);
+            nodes[1, 0].SetNextSpawnBall(ColorDefine.Gray);
             nodes[1, 0].SpawnBall();
 
             nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
@@ -49,13 +50,13 @@ public class Board : MonoBehaviour
             }
             if (Input.GetKeyUp("space"))
             {
-                nodes[1, 1].SetNextSpawnBall(ColorDefine.Blue);
+                nodes[1, 1].SetNextSpawnBall(ColorDefine.Gray);
                 nodes[1, 1].SpawnBall();
 
-                nodes[0, 1].SetNextSpawnBall(ColorDefine.Red);
+                nodes[0, 1].SetNextSpawnBall(ColorDefine.Gray);
                 nodes[0, 1].SpawnBall();
 
-                nodes[1, 0].SetNextSpawnBall(ColorDefine.Yellow);
+                nodes[1, 0].SetNextSpawnBall(ColorDefine.Gray);
                 nodes[1, 0].SpawnBall();
 
                 nodes[3, 7].SetNextSpawnBall(ColorDefine.Gray);
@@ -71,13 +72,30 @@ public class Board : MonoBehaviour
     {
         
     }
-    void SetSpawnBall()
+    public void SetSpawnQueue()
     {
+        Node randomNode1 = ChooseRandomIdleNode();
+        randomNode1.status = Node.STATUS.WillSpawn;
+        randomNode1.SetNextSpawnBall(ColorDefine.Gray);
 
+        randomNode1.SpawnBall();
     }
-    void SetSpawnQueue()
+
+    private Node ChooseRandomIdleNode()
     {
-        UpdateMap();
+        Node[] idleNodes = new Node[0];
+        foreach(Node node in nodes)
+        {
+            if(node.status == Node.STATUS.Idle)
+            {
+                Array.Resize(ref idleNodes, idleNodes.Length + 1);
+                idleNodes[idleNodes.Length - 1] = node;
+            }
+        }
+        int randomIndex = (int)Mathf.Floor(UnityEngine.Random.Range(0.0f, (float)idleNodes.Length - 0.001f));
+        //if idleNodes.Length == 0 -> endgame
+
+        return idleNodes[randomIndex];
     }
     void RouteForBall()
     {

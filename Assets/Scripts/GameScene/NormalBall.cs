@@ -7,7 +7,7 @@ public class NormalBall : MonoBehaviour
     private Node myStand = null;
     public enum STATUS{ Idle, Using}
     public STATUS status = STATUS.Idle;
-    private Color myColor = new Color(0,0,0,0);
+    public Color myColor = new Color(0,0,0,0);
     //color val: white, green, blue, yellow, red, orange, purple, brown, dark-green, dark-blue, nothing
     private Node target = null;
     private Animator anim;

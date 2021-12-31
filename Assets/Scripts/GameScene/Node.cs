@@ -64,6 +64,10 @@ public class Node : MonoBehaviour
     {
         myBall = newBall;
     }
+    public NormalBall GetMyBall()
+    {
+        return myBall;
+    }
     public Vector2 GetMyPosition()
     {
         return myPosition;
