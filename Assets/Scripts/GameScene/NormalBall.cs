@@ -74,7 +74,7 @@ public class NormalBall : MonoBehaviour
         for(int i = counter - 1; i >= 0; i--)
         {
             MoveToNextPos(route[i]);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
         }
         ReCalculateStand();
     }
@@ -91,6 +91,9 @@ public class NormalBall : MonoBehaviour
         myStand.status = Node.STATUS.Holding;
         target = null;
         GameController.gamecontroller.CheckScore(this.myStand);
+
+        Board.mainBoard.SpawnBalls();
+        Board.mainBoard.SetSpawnQueue();
 
         //Delete below code later
         CanSelectAgain();

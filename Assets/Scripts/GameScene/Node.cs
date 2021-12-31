@@ -6,7 +6,7 @@ public class Node : MonoBehaviour
 {
     //color val: white, green, blue, yellow, red, orange, purple, brown, dark-green, dark-blue, nothing
     public enum STATUS {Idle, Holding, WillSpawn, SubSpawn};
-    public STATUS status;
+    public STATUS status = STATUS.Idle;
     //status val: idle, holding, willspawn, subspawn
 
     //for route
@@ -51,7 +51,9 @@ public class Node : MonoBehaviour
     public void Score()
     {
         status = STATUS.Idle;
-        BallPool.GiveBackBall(myBall);
+        if(myBall)
+            BallPool.GiveBackBall(myBall);
+        myBall = null;
     }
 
     public void SetMyPosition(int x, int y)
@@ -79,5 +81,9 @@ public class Node : MonoBehaviour
             crossCost = 999;
         else
             crossCost = 1;
+    }
+    public bool HasHolding()
+    {
+        return status == STATUS.Holding;
     }
 }
