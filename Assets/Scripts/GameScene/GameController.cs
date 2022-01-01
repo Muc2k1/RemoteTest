@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour
     const int MAX_BALLS_CAN_CLEAR = 33;
     const int MAX_STEP_CHECK = 4;
     const int MIN_COLORS_CAN_ROLL = 3;
-    const int MAX_COLORS_CAN_ROLL = 8;
+    const int MAX_COLORS_CAN_ROLL = 7;
     const int NO_OF_TURN_TO_GET_NEW_COLOR = 8;
     public static GameController gamecontroller;
     const int NODES_IN_ROW = 9;
@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
     {
         turnCount ++;
         maxNumberOfColor = turnCount / NO_OF_TURN_TO_GET_NEW_COLOR + MIN_COLORS_CAN_ROLL;
-        Mathf.Clamp(maxNumberOfColor, MIN_COLORS_CAN_ROLL, MAX_COLORS_CAN_ROLL);
+        Mathf.Clamp(maxNumberOfColor, MIN_COLORS_CAN_ROLL, MAX_COLORS_CAN_ROLL - 1);
     }
     void CheckEndGame()
     {
@@ -46,27 +46,23 @@ public class GameController : MonoBehaviour
     }
     public bool CheckScore(Node justUpdateNode)
     {
-        if(justUpdateNode)
+        int x_dir = (int)justUpdateNode.GetMyPosition().x;
+        int y_dir = (int)justUpdateNode.GetMyPosition().y;
+
+        Node[] verNode = VerticleCheck(x_dir, y_dir);
+        Node[] D130Node = Diagonal1Check(x_dir, y_dir);
+        Node[] D1030Node = Diagonal2Check(x_dir, y_dir);
+        Node[] horNode = HorizontalCheck(x_dir, y_dir);
+
+        bool _vc = CheckToClearBall(verNode);
+        bool _vd1 = CheckToClearBall(D130Node); 
+        bool _vd2 = CheckToClearBall(D1030Node);
+        bool _vh = CheckToClearBall(horNode);
+        if(_vc || _vd1 || _vd2 || _vh)
         {
-            int x_dir = (int)justUpdateNode.GetMyPosition().x;
-            int y_dir = (int)justUpdateNode.GetMyPosition().y;
-
-            Node[] verNode = VerticleCheck(x_dir, y_dir);
-            Node[] D130Node = Diagonal1Check(x_dir, y_dir);
-            Node[] D1030Node = Diagonal2Check(x_dir, y_dir);
-            Node[] horNode = HorizontalCheck(x_dir, y_dir);
-
-            bool _vc = CheckToClearBall(verNode);
-            bool _vd1 = CheckToClearBall(D130Node); 
-            bool _vd2 = CheckToClearBall(D1030Node);
-            bool _vh = CheckToClearBall(horNode);
-            if(_vc || _vd1 || _vd2 || _vh)
-            {
-                justUpdateNode.Score();
-            }
-            return (_vc || _vd1 || _vd2 || _vh);
+            justUpdateNode.Score();
         }
-        return true;
+        return (_vc || _vd1 || _vd2 || _vh);
     }
     private bool CheckToClearBall(Node[] nodes)
     {
@@ -116,10 +112,6 @@ public class GameController : MonoBehaviour
                 }
             }
             else i = x_step_must_check_up;
-        }
-        foreach(Node node in res)
-        {
-            print(node);
         }
         return res;
     }
@@ -175,10 +167,6 @@ public class GameController : MonoBehaviour
             }
             else i = step_must_check_dr;
         }
-        foreach(Node node in res)
-        {
-            print(node);
-        }
         return res;
     }
     private Node[] Diagonal2Check(int x, int y)
@@ -233,10 +221,6 @@ public class GameController : MonoBehaviour
             }
             else i = step_must_check_dl;
         }
-        foreach(Node node in res)
-        {
-            print(node);
-        }
         return res;
     }
     private Node[] HorizontalCheck(int x, int y)
@@ -254,7 +238,6 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= y_step_must_check_right; i++)
         {
-            print("check right: " + (y+i));
             if(board.nodes[x,y+i].HasHolding())
             {
                 if(board.nodes[x,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
@@ -267,7 +250,6 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= y_step_must_check_left; i++)
         {
-            print("check up left: " + (i-i));
             if(board.nodes[x,y-i].HasHolding())
             {
                 if(board.nodes[x,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
@@ -277,10 +259,6 @@ public class GameController : MonoBehaviour
                 }
             }
             else i = y_step_must_check_left;
-        }
-        foreach(Node node in res)
-        {
-            print(node);
         }
         return res;
     }

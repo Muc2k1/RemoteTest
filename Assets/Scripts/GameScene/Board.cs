@@ -15,6 +15,8 @@ public class Board : MonoBehaviour
     public Node target = null;
 
     public static Board mainBoard;
+
+    private int maxBallCanSpawn = 3;
     // Start is called before the first frame update
     void Awake()
     {
@@ -47,6 +49,7 @@ public class Board : MonoBehaviour
                 looseConditionCount++;
             }
         }
+        maxBallCanSpawn = looseConditionCount;
         if(looseConditionCount == 0)
         {
             Loose();
@@ -78,7 +81,7 @@ public class Board : MonoBehaviour
             }
             node.SetToDefaultSign();
         }
-        if (spawnCount < 3)
+        if (spawnCount < maxBallCanSpawn)
         {
             Node randomSubNode = ChooseRandomIdleNode();
             if (!randomSubNode)
@@ -94,7 +97,8 @@ public class Board : MonoBehaviour
         }
         foreach(Node node in spawnNodes)
         {
-           GameController.gamecontroller.CheckScore(node);
+            print("Check on: " + node);
+            GameController.gamecontroller.CheckScore(node);
         }
 
         GameController.gamecontroller.NextTurn();
