@@ -97,7 +97,6 @@ public class Board : MonoBehaviour
         }
         foreach(Node node in spawnNodes)
         {
-            print("Check on: " + node);
             GameController.gamecontroller.CheckScore(node);
         }
 

@@ -72,7 +72,7 @@ public class Node : MonoBehaviour
     {
         status = STATUS.Idle;
         if(myBall)
-            BallPool.GiveBackBall(myBall);
+            myBall.Score();
         myBall = null;
         DataController.datacontroller.AddScore(1);
     }

@@ -7,22 +7,26 @@ public class NormalBall : MonoBehaviour
     private Node myStand = null;
     public enum STATUS{ Idle, Using}
     public STATUS status = STATUS.Idle;
+    const float MOVING_FRAME = 46f;
+    const float SEC_TO_60 = 60f;
     public Color myColor = new Color(0,0,0,0);
     //color val: white, green, blue, yellow, red, orange, purple, brown, dark-green, dark-blue, nothing
     private Node target = null;
+    private Node nextStep = null;
     private Animator anim;
+
+    private bool walking = false;
+    private float speed = 1.5f;
     void Start()
     {
         anim = GetComponent<Animator>();
     }
     void Update()
     {
-        
-    }
-
-    void SetNextPos()
-    {
-
+        if(walking)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, nextStep.gameObject.transform.position, Time.deltaTime * speed);
+        }
     }
     public void SetTarget(Node newTarget)
     {
@@ -42,11 +46,14 @@ public class NormalBall : MonoBehaviour
     {
         anim.Play("Sleeping", 0, 0f);
     }
-    void GetScore()
+    private void ToMovingAnimation()
     {
-
+        anim.Play("Moving", 0, 0f);
     }
-
+    private void ToQuitAnimation()
+    {
+        anim.Play("Quit", 0, 0f);
+    }
     public void SetMyStand(Node node)
     {
         myStand = node;
@@ -62,6 +69,8 @@ public class NormalBall : MonoBehaviour
     }
     IEnumerator MoveStepByStep()
     {
+        walking = true;
+        ToMovingAnimation();
         Node[] route = new Node[MAX_STEP_BALL_CAN_MOVE];
         int counter = 0;
         Node currentNode = target;
@@ -74,13 +83,16 @@ public class NormalBall : MonoBehaviour
         for(int i = counter - 1; i >= 0; i--)
         {
             MoveToNextPos(route[i]);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(MOVING_FRAME/SEC_TO_60);
         }
+        walking = false;
+        Board.mainBoard.UnselectBall();
         ReCalculateStand();
     }
     private void MoveToNextPos(Node nextPos)
     {
-        transform.position = nextPos.gameObject.transform.position;
+        nextStep = nextPos;
+        //transform.position = nextPos.gameObject.transform.position;
     }
     private void ReCalculateStand()
     {
@@ -96,14 +108,20 @@ public class NormalBall : MonoBehaviour
             Board.mainBoard.SpawnBalls();
             Board.mainBoard.SetSpawnQueue();
         }
-
         //Delete below code later
         CanSelectAgain();
     }
 
-    private void CanSelectAgain()
+    public void Score()
+    {
+        ToQuitAnimation();
+    }
+    public void CanSelectAgain()
     {
         GameController.turn = 1;
-        Board.mainBoard.UnselectBall();
+    }
+    public void ToThePool()
+    {
+        BallPool.GiveBackBall(this);
     }
 }
