@@ -5,7 +5,7 @@ using UnityEngine;
 public class BallPool : MonoBehaviour
 {
     public static NormalBall[] Balls = new NormalBall[MAX_BALLS_IN_POOL];
-    private const int MAX_BALLS_IN_POOL = 81; 
+    private const int MAX_BALLS_IN_POOL = 84; 
     void Awake()
     {
         for (int i = 0; i < MAX_BALLS_IN_POOL; i++)

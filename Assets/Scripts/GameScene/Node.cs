@@ -19,6 +19,19 @@ public class Node : MonoBehaviour
     private NormalBall nextSpawnBall = null;
 
     public bool isAcceptByRouter = false;
+
+    public SpriteRenderer sign;
+    private Color defaultSignColor; 
+
+    // void Awake()
+    // {
+    //     // sign = gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+    // }    
+    void Start()
+    {
+        defaultSignColor = sign.color;
+        status = STATUS.Idle;
+    }
     void OnMouseDown()
     {
         if(GameController.turn == 1)
@@ -37,23 +50,36 @@ public class Node : MonoBehaviour
     {
         status = STATUS.WillSpawn;
         nextSpawnBall = BallPool.TakeMyBall();
-        nextSpawnBall.SetColor(ballColor);
+        if(nextSpawnBall)
+            nextSpawnBall.SetColor(ballColor);
+
+        sign.color = ballColor;
     }
     public void SpawnBall()
     {
-        status = STATUS.Holding;
         myBall = nextSpawnBall;
-        myBall.SetMyStand(GetComponent<Node>());
-        nextSpawnBall = null;
-        myBall.gameObject.SetActive(true);
-        myBall.gameObject.transform.position = transform.position;
+        if(myBall)
+        {
+            status = STATUS.Holding;
+            myBall.SetMyStand(GetComponent<Node>());
+            nextSpawnBall = null;
+            myBall.gameObject.SetActive(true);
+            myBall.gameObject.transform.position = transform.position;
+        }
+        SetToDefaultSign();
     }
     public void Score()
     {
         status = STATUS.Idle;
         if(myBall)
-            BallPool.GiveBackBall(myBall);
+            myBall.Score();
         myBall = null;
+        DataController.datacontroller.AddScore(1);
+    }
+
+    public void SetToDefaultSign()
+    {
+        sign.color = defaultSignColor;
     }
 
     public void SetMyPosition(int x, int y)
@@ -84,6 +110,6 @@ public class Node : MonoBehaviour
     }
     public bool HasHolding()
     {
-        return status == STATUS.Holding;
+        return status == STATUS.Holding && myBall != null;
     }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//Debug
+using UnityEngine.SceneManagement;
 
 public class Board : MonoBehaviour
 {
@@ -13,6 +15,8 @@ public class Board : MonoBehaviour
     public Node target = null;
 
     public static Board mainBoard;
+
+    private int maxBallCanSpawn = 3;
     // Start is called before the first frame update
     void Awake()
     {
@@ -21,36 +25,46 @@ public class Board : MonoBehaviour
     }
     void Start()
     {
-        //Debug side Testcase1:
-            nodes[1, 1].SetNextSpawnBall(ColorDefine.Gray);
-            nodes[1, 1].SpawnBall();
-
-            nodes[0, 1].SetNextSpawnBall(ColorDefine.Gray);
-            nodes[0, 1].SpawnBall();
-
-            nodes[1, 0].SetNextSpawnBall(ColorDefine.Gray);
-            nodes[1, 0].SpawnBall();
-
-            SetSpawnQueue();
+        SetSpawnQueue();
+        SpawnBalls();
+        SetSpawnQueue();
     }
-    void Update()
+    void Loose()
     {
-
-    }
-
-    // Update is called once per frame
-    void UpdateMap()
-    {
-        
+        DataController.datacontroller.CheckScore();
+        //Debug
+        SceneManager.LoadScene(2);
     }
     public void SetSpawnQueue()
     {
+        int looseConditionCount = 0;
+        Color[] randCSet = GetRandom3Colors();
         for(int i = 0 ; i < 3; i++)
         {
             Node randomNode = ChooseRandomIdleNode();
-            randomNode.status = Node.STATUS.WillSpawn;
-            randomNode.SetNextSpawnBall(ColorDefine.Gray);
+            if(randomNode)
+            {
+                randomNode.status = Node.STATUS.WillSpawn;
+                randomNode.SetNextSpawnBall(randCSet[i]);
+                looseConditionCount++;
+            }
         }
+        maxBallCanSpawn = looseConditionCount;
+        if(looseConditionCount == 0)
+        {
+            Loose();
+        }
+
+    }
+    private Color[] GetRandom3Colors()
+    {
+        Color[] res = new Color[3];
+        for(int i = 0; i < 3; i++)
+        {
+            int randC = (int)UnityEngine.Random.Range(0f, GameController.gamecontroller.maxNumberOfColor - 0.001f);
+            res[i] = ColorDefine.ColorSet[randC];
+        }
+        return res;
     }
     public void SpawnBalls()
     {
@@ -65,20 +79,28 @@ public class Board : MonoBehaviour
                 node.SpawnBall();
                 spawnCount ++;
             }
+            node.SetToDefaultSign();
         }
-        if (spawnCount < 3)
+        if (spawnCount < maxBallCanSpawn)
         {
             Node randomSubNode = ChooseRandomIdleNode();
+            if (!randomSubNode)
+            {
+                Loose();
+                return;
+            }
             randomSubNode.status = Node.STATUS.WillSpawn;
-            randomSubNode.SetNextSpawnBall(ColorDefine.Gray);
+            randomSubNode.SetNextSpawnBall(GetRandom3Colors()[0]);
             Array.Resize(ref spawnNodes, spawnNodes.Length + 1);
             spawnNodes[spawnNodes.Length - 1] = randomSubNode;
             randomSubNode.SpawnBall();
         }
         foreach(Node node in spawnNodes)
         {
-           GameController.gamecontroller.CheckScore(node);
+            GameController.gamecontroller.CheckScore(node);
         }
+
+        GameController.gamecontroller.NextTurn();
     }
     private Node ChooseRandomIdleNode()
     {
@@ -91,10 +113,13 @@ public class Board : MonoBehaviour
                 idleNodes[idleNodes.Length - 1] = node;
             }
         }
-        int randomIndex = (int)Mathf.Floor(UnityEngine.Random.Range(0.0f, (float)idleNodes.Length - 0.001f));
-        //if idleNodes.Length == 0 -> endgame
-
-        return idleNodes[randomIndex];
+        int randomIndex;
+        if(idleNodes.Length != 0)
+        {
+            randomIndex = (int)Mathf.Floor(UnityEngine.Random.Range(0.0f, (float)idleNodes.Length - 0.001f));
+            return idleNodes[randomIndex];
+        }
+        else return null;
     }
     void RouteForBall()
     {
