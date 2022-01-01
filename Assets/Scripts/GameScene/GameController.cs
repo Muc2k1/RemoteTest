@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
     }
     void Start()
     {
-        Time.timeScale = 8;
+        Time.timeScale = 2;
     }
     void Update()
     {

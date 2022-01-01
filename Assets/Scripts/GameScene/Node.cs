@@ -61,6 +61,7 @@ public class Node : MonoBehaviour
         myBall = nextSpawnBall;
         if(myBall)
         {
+            myBall.ToAwakeAnimation();
             status = STATUS.Holding;
             myBall.SetMyStand(GetComponent<Node>());
             nextSpawnBall = null;

@@ -50,6 +50,12 @@ public class NormalBall : MonoBehaviour
     {
         anim.Play("Moving", 0, 0f);
     }
+    public void ToAwakeAnimation()
+    {
+        print("here");
+        anim = GetComponent<Animator>();
+        anim.Play("Awake", 0, 0f);
+    }
     private void ToQuitAnimation()
     {
         anim = GetComponent<Animator>();
