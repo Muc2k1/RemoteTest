@@ -10,13 +10,12 @@ public class Board : MonoBehaviour
     const int NODES_IN_ROW = 9;
     const int SUPER_BIG_INT = 999;
     public Node[,] nodes = new Node[NODES_IN_ROW,NODES_IN_ROW];
-
     public NormalBall selectingBall = null;
     public Node target = null;
-
     public static Board mainBoard;
-
     private int maxBallCanSpawn = 3;
+
+    private bool isClassic = true;
     // Start is called before the first frame update
     void Awake()
     {
@@ -25,6 +24,7 @@ public class Board : MonoBehaviour
     }
     void Start()
     {
+        isClassic = (PlayerPrefs.GetString("GameMode") == "Classic");
         SetSpawnQueue();
         SpawnBalls();
         SetSpawnQueue();
@@ -219,14 +219,33 @@ public class Board : MonoBehaviour
 
     private void MoveOrUnselect()
     {
-        if(HasPath(target))
+        if(!isClassic)
         {
-            MoveBall();
+            if(selectingBall.GetComponent<GhostBall>())
+            {
+                MoveBall();
+            }
+            else if(HasPath(target))
+            {
+                MoveBall();
+            }
+            else
+            {
+                UnselectBall();
+                SoundSource.PlaySound("failclick");
+            }
         }
         else
         {
-            UnselectBall();
-            SoundSource.PlaySound("failclick");
+            if(HasPath(target))
+            {
+                MoveBall();
+            }
+            else
+            {
+                UnselectBall();
+                SoundSource.PlaySound("failclick");
+            }
         }
     }
     private bool HasPath(Node target)
@@ -240,7 +259,11 @@ public class Board : MonoBehaviour
     private void MoveBall()
     {
         selectingBall.SetTarget(target);
-        selectingBall.Move();
+        if(!isClassic && selectingBall.GetComponent<GhostBall>())
+        {
+            selectingBall.GetComponent<GhostBall>().Move();
+        }
+        else selectingBall.Move();
     }
     public void UnselectBall()
     {

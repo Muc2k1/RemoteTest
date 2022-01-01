@@ -22,6 +22,9 @@ public class Node : MonoBehaviour
 
     public SpriteRenderer sign;
     private Color defaultSignColor; 
+    private bool isClassic = true;
+
+    public NormalBall ghost;
 
     // void Awake()
     // {
@@ -29,6 +32,7 @@ public class Node : MonoBehaviour
     // }    
     void Start()
     {
+        isClassic = (PlayerPrefs.GetString("GameMode") == "Classic");
         defaultSignColor = sign.color;
         status = STATUS.Idle;
     }
@@ -59,16 +63,41 @@ public class Node : MonoBehaviour
     public void SpawnBall()
     {
         myBall = nextSpawnBall;
-        if(myBall)
+        if(!isClassic)
         {
-            myBall.ToAwakeAnimation();
-            status = STATUS.Holding;
-            myBall.SetMyStand(GetComponent<Node>());
-            nextSpawnBall = null;
-            myBall.gameObject.SetActive(true);
-            myBall.gameObject.transform.position = transform.position;
+            int rand = (int)Random.Range(0f,20f);
+            if(rand < 1)
+            {
+                SpawnGhostBall();
+            }
+            else
+            {
+                SpawnNormalBall();
+            }
+        }
+        else if(myBall)
+        {
+            SpawnNormalBall();
         }
         SetToDefaultSign();
+    }
+    void SpawnNormalBall()
+    {
+        myBall.ToAwakeAnimation();
+        status = STATUS.Holding;
+        myBall.SetMyStand(GetComponent<Node>());
+        nextSpawnBall = null;
+        myBall.gameObject.SetActive(true);
+        myBall.gameObject.transform.position = transform.position;
+    }
+    void SpawnGhostBall()
+    {
+        myBall = Instantiate(ghost, transform.position, transform.rotation);
+        myBall.SetColor(nextSpawnBall.myColor);
+        status = STATUS.Holding;
+        myBall.SetMyStand(GetComponent<Node>());
+        nextSpawnBall = null;
+        myBall.gameObject.SetActive(true);
     }
     public void Score()
     {

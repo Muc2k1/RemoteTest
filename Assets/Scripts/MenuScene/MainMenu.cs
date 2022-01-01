@@ -12,4 +12,11 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene(i);
     }
+    public void isClassic(bool isClassic)
+    {
+        if(isClassic)
+            PlayerPrefs.SetString("GameMode","Classic");
+        else
+            PlayerPrefs.SetString("GameMode","New School");
+    }
 }

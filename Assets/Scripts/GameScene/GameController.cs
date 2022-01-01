@@ -15,7 +15,6 @@ public class GameController : MonoBehaviour
     public static int turn = 1; //0: waiting, 1: thinking
     public int maxNumberOfColor = 3;
     private GameObject selectingBall = null;
-    private string gameMode = "Classic";
     private int score = 0; 
 
     private Board board;
@@ -34,7 +33,7 @@ public class GameController : MonoBehaviour
     }
     void Start()
     {
-        Time.timeScale = 2;
+        // Time.timeScale = 2;
     }
     void Update()
     {
