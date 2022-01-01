@@ -4,19 +4,19 @@ using UnityEngine;
 public class NormalBall : MonoBehaviour
 {
     const int MAX_STEP_BALL_CAN_MOVE = 80;
-    private Node myStand = null;
+    Node myStand = null;
     public enum STATUS{ Idle, Using}
     public STATUS status = STATUS.Idle;
-    const float MOVING_FRAME = 46f;
+    const float MOVING_FRAME = 28f;
     const float SEC_TO_60 = 60f;
     public Color myColor = new Color(0,0,0,0);
     //color val: white, green, blue, yellow, red, orange, purple, brown, dark-green, dark-blue, nothing
-    private Node target = null;
-    private Node nextStep = null;
-    private Animator anim;
+    protected Node target = null;
+    Node nextStep = null;
+    Animator anim;
 
-    private bool walking = false;
-    private float speed = 1.5f;
+    bool walking = false;
+    float speed = 3f;
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -46,12 +46,18 @@ public class NormalBall : MonoBehaviour
     {
         anim.Play("Sleeping", 0, 0f);
     }
-    private void ToMovingAnimation()
+    protected void ToMovingAnimation()
     {
         anim.Play("Moving", 0, 0f);
     }
-    private void ToQuitAnimation()
+    public void ToAwakeAnimation()
     {
+        anim = GetComponent<Animator>();
+        anim.Play("Awake", 0, 0f);
+    }
+    void ToQuitAnimation()
+    {
+        anim = GetComponent<Animator>();
         anim.Play("Quit", 0, 0f);
     }
     public void SetMyStand(Node node)
@@ -83,18 +89,19 @@ public class NormalBall : MonoBehaviour
         for(int i = counter - 1; i >= 0; i--)
         {
             MoveToNextPos(route[i]);
+            SoundSource.PlaySound("jump");
             yield return new WaitForSeconds(MOVING_FRAME/SEC_TO_60);
         }
         walking = false;
         Board.mainBoard.UnselectBall();
         ReCalculateStand();
     }
-    private void MoveToNextPos(Node nextPos)
+    void MoveToNextPos(Node nextPos)
     {
         nextStep = nextPos;
         //transform.position = nextPos.gameObject.transform.position;
     }
-    private void ReCalculateStand()
+    protected void ReCalculateStand()
     {
         myStand.status = Node.STATUS.Idle;
         myStand.SetMyBall(null);
