@@ -33,7 +33,7 @@ public class Board : MonoBehaviour
     {
         DataController.datacontroller.CheckScore();
         //Debug
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
     public void SetSpawnQueue()
     {

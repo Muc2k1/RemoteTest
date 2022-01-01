@@ -20,12 +20,17 @@ public class Node : MonoBehaviour
 
     public bool isAcceptByRouter = false;
 
-    private SpriteRenderer sign;
+    public SpriteRenderer sign;
     private Color defaultSignColor; 
+
+    // void Awake()
+    // {
+    //     // sign = gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+    // }    
     void Start()
     {
-        sign = gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
         defaultSignColor = sign.color;
+        status = STATUS.Idle;
     }
     void OnMouseDown()
     {
@@ -105,6 +110,6 @@ public class Node : MonoBehaviour
     }
     public bool HasHolding()
     {
-        return status == STATUS.Holding;
+        return status == STATUS.Holding && myBall != null;
     }
 }

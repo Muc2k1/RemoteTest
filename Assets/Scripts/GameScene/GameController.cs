@@ -46,23 +46,27 @@ public class GameController : MonoBehaviour
     }
     public bool CheckScore(Node justUpdateNode)
     {
-        int x_dir = (int)justUpdateNode.GetMyPosition().x;
-        int y_dir = (int)justUpdateNode.GetMyPosition().y;
-
-        Node[] verNode = VerticleCheck(x_dir, y_dir);
-        Node[] D130Node = Diagonal1Check(x_dir, y_dir);
-        Node[] D1030Node = Diagonal2Check(x_dir, y_dir);
-        Node[] horNode = HorizontalCheck(x_dir, y_dir);
-
-        bool _vc = CheckToClearBall(verNode);
-        bool _vd1 = CheckToClearBall(D130Node); 
-        bool _vd2 = CheckToClearBall(D1030Node);
-        bool _vh = CheckToClearBall(horNode);
-        if(_vc || _vd1 || _vd2 || _vh)
+        if(justUpdateNode.HasHolding())
         {
-            justUpdateNode.Score();
+            int x_dir = (int)justUpdateNode.GetMyPosition().x;
+            int y_dir = (int)justUpdateNode.GetMyPosition().y;
+
+            Node[] verNode = VerticleCheck(x_dir, y_dir);
+            Node[] D130Node = Diagonal1Check(x_dir, y_dir);
+            Node[] D1030Node = Diagonal2Check(x_dir, y_dir);
+            Node[] horNode = HorizontalCheck(x_dir, y_dir);
+
+            bool _vc = CheckToClearBall(verNode);
+            bool _vd1 = CheckToClearBall(D130Node); 
+            bool _vd2 = CheckToClearBall(D1030Node);
+            bool _vh = CheckToClearBall(horNode);
+            if(_vc || _vd1 || _vd2 || _vh)
+            {
+                justUpdateNode.Score();
+            }
+            return (_vc || _vd1 || _vd2 || _vh);
         }
-        return (_vc || _vd1 || _vd2 || _vh);
+        return false;
     }
     private bool CheckToClearBall(Node[] nodes)
     {
@@ -98,6 +102,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x+i,y];
                 }
+                else i = x_step_must_check_down;
             }
             else i = x_step_must_check_down;
         }
@@ -110,6 +115,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x-i,y];
                 }
+                else i = x_step_must_check_up;
             }
             else i = x_step_must_check_up;
         }
@@ -152,6 +158,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x-i,y-i];
                 }
+                 else i = step_must_check_ul;
             }
             else i = step_must_check_ul;
         }
@@ -164,6 +171,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x+i,y+i];
                 }
+                 else i = step_must_check_dr;
             }
             else i = step_must_check_dr;
         }
@@ -206,6 +214,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x-i,y+i];
                 }
+                else i = step_must_check_ur;
             }
             else i = step_must_check_ur;
         }
@@ -218,6 +227,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x+i,y-i];
                 }
+                else i = step_must_check_dl;
             }
             else i = step_must_check_dl;
         }
@@ -245,6 +255,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x,y+i];
                 }
+                else i = y_step_must_check_right;
             }
             else i = y_step_must_check_right;
         }
@@ -257,6 +268,7 @@ public class GameController : MonoBehaviour
                     Array.Resize(ref res, res.Length + 1);
                     res[res.Length - 1] = board.nodes[x,y-i];
                 }
+                else i = y_step_must_check_left;
             }
             else i = y_step_must_check_left;
         }
