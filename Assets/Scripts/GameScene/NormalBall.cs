@@ -90,10 +90,12 @@ public class NormalBall : MonoBehaviour
         myStand.SetMyBall(this.GetComponent<NormalBall>());
         myStand.status = Node.STATUS.Holding;
         target = null;
-        GameController.gamecontroller.CheckScore(this.myStand);
 
-        Board.mainBoard.SpawnBalls();
-        Board.mainBoard.SetSpawnQueue();
+        if(!GameController.gamecontroller.CheckScore(this.myStand))
+        {
+            Board.mainBoard.SpawnBalls();
+            Board.mainBoard.SetSpawnQueue();
+        }
 
         //Delete below code later
         CanSelectAgain();

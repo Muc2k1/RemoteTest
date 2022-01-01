@@ -12,4 +12,5 @@ public class ColorDefine : ScriptableObject
     public static Color Purple = Color.magenta;
     public static Color Gray = Color.gray;
     public static Color DarkBlue = Color.blue;
+    public static Color[] ColorSet = new Color[] {Red, Yellow, Blue, Green, Purple, DarkBlue, Gray, White};
 }
