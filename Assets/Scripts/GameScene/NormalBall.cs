@@ -52,6 +52,7 @@ public class NormalBall : MonoBehaviour
     }
     private void ToQuitAnimation()
     {
+        anim = GetComponent<Animator>();
         anim.Play("Quit", 0, 0f);
     }
     public void SetMyStand(Node node)
@@ -83,6 +84,7 @@ public class NormalBall : MonoBehaviour
         for(int i = counter - 1; i >= 0; i--)
         {
             MoveToNextPos(route[i]);
+            SoundSource.PlaySound("jump");
             yield return new WaitForSeconds(MOVING_FRAME/SEC_TO_60);
         }
         walking = false;

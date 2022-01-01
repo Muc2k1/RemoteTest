@@ -34,10 +34,11 @@ public class Node : MonoBehaviour
     }
     void OnMouseDown()
     {
-        if(GameController.turn == 1)
+        if(GameController.turn == 1 && !GameController.gamecontroller.paused)
         {
             if(status == STATUS.Holding)
             {
+                SoundSource.PlaySound("click");
                 Board.mainBoard.SetSelectingBall(myBall);
             }
             else if (Board.mainBoard.selectingBall)
@@ -70,9 +71,9 @@ public class Node : MonoBehaviour
     }
     public void Score()
     {
-        status = STATUS.Idle;
         if(myBall)
             myBall.Score();
+        status = STATUS.Idle;
         myBall = null;
         DataController.datacontroller.AddScore(1);
     }

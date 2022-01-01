@@ -224,7 +224,10 @@ public class Board : MonoBehaviour
             MoveBall();
         }
         else
+        {
             UnselectBall();
+            SoundSource.PlaySound("failclick");
+        }
     }
     private bool HasPath(Node target)
     {

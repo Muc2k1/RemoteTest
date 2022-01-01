@@ -21,28 +21,46 @@ public class GameController : MonoBehaviour
     private Board board;
 
     public int turnCount = 0;
+
+    public bool paused = false;
+
+    public GameObject pauseUI;
     // Start is called before the first frame update
     void Awake()
     {
         gamecontroller = this;
+        AudioListener.volume = PlayerPrefs.GetFloat("musicvolume", 1);
+        board = Board.mainBoard;
     }
     void Start()
     {
-        board = Board.mainBoard;
+        Time.timeScale = 8;
+    }
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Pause();
+        }
+    }
+    public void Pause()
+    {
+        paused = !paused;
+        pauseUI.SetActive(paused);
+        if(paused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
     }
     public void NextTurn()
     {
         turnCount ++;
         maxNumberOfColor = turnCount / NO_OF_TURN_TO_GET_NEW_COLOR + MIN_COLORS_CAN_ROLL;
         maxNumberOfColor = Mathf.Clamp(maxNumberOfColor, MIN_COLORS_CAN_ROLL, MAX_COLORS_CAN_ROLL);
-    }
-    void CheckEndGame()
-    {
-
-    }
-    void EndGame()
-    {
-
     }
     public bool CheckScore(Node justUpdateNode)
     {
@@ -63,6 +81,7 @@ public class GameController : MonoBehaviour
             if(_vc || _vd1 || _vd2 || _vh)
             {
                 justUpdateNode.Score();
+                SoundSource.PlaySound("score");
             }
             return (_vc || _vd1 || _vd2 || _vh);
         }
