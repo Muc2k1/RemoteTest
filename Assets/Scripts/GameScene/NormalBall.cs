@@ -4,7 +4,7 @@ using UnityEngine;
 public class NormalBall : MonoBehaviour
 {
     const int MAX_STEP_BALL_CAN_MOVE = 80;
-    Node myStand = null;
+    protected Node myStand = null;
     public enum STATUS{ Idle, Using}
     public STATUS status = STATUS.Idle;
     const float MOVING_FRAME = 28f;
@@ -13,7 +13,7 @@ public class NormalBall : MonoBehaviour
     //color val: white, green, blue, yellow, red, orange, purple, brown, dark-green, dark-blue, nothing
     protected Node target = null;
     Node nextStep = null;
-    Animator anim;
+    protected Animator anim;
 
     bool walking = false;
     float speed = 3f;
@@ -55,7 +55,7 @@ public class NormalBall : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.Play("Awake", 0, 0f);
     }
-    void ToQuitAnimation()
+    protected void ToQuitAnimation()
     {
         anim = GetComponent<Animator>();
         anim.Play("Quit", 0, 0f);

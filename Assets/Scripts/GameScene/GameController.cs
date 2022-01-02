@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
     public bool paused = false;
 
     public GameObject pauseUI;
+    private bool isClassic;
     // Start is called before the first frame update
     void Awake()
     {
@@ -33,7 +34,8 @@ public class GameController : MonoBehaviour
     }
     void Start()
     {
-        // Time.timeScale = 2;
+        isClassic = (PlayerPrefs.GetString("GameMode") == "Classic");
+        // Time.timeScale = 3;
     }
     void Update()
     {
@@ -79,7 +81,7 @@ public class GameController : MonoBehaviour
             bool _vh = CheckToClearBall(horNode);
             if(_vc || _vd1 || _vd2 || _vh)
             {
-                justUpdateNode.Score();
+                ScoreNode(justUpdateNode);
                 SoundSource.PlaySound("score");
             }
             return (_vc || _vd1 || _vd2 || _vh);
@@ -92,11 +94,15 @@ public class GameController : MonoBehaviour
         {
             foreach( Node node in nodes)
             {
-                node.Score();
+                ScoreNode(node);
             }
             return true;
         }
         return false;
+    }
+    private void ScoreNode(Node node)
+    {
+        node.Score();
     }
     private Node[] VerticleCheck(int x, int y)
     {

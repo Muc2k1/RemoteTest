@@ -25,12 +25,8 @@ public class Node : MonoBehaviour
     private bool isClassic = true;
 
     public NormalBall ghost;
-
-    // void Awake()
-    // {
-    //     // sign = gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
-    // }    
-    void Start()
+    public NormalBall fat;
+    void Awake()
     {
         isClassic = (PlayerPrefs.GetString("GameMode") == "Classic");
         defaultSignColor = sign.color;
@@ -42,8 +38,13 @@ public class Node : MonoBehaviour
         {
             if(status == STATUS.Holding)
             {
-                SoundSource.PlaySound("click");
-                Board.mainBoard.SetSelectingBall(myBall);
+                if(!isClassic && myBall.GetComponent<FatBall>())
+                    SoundSource.PlaySound("failclick");
+                else
+                {
+                    SoundSource.PlaySound("click");
+                    Board.mainBoard.SetSelectingBall(myBall);
+                }
             }
             else if (Board.mainBoard.selectingBall)
             {
@@ -70,6 +71,10 @@ public class Node : MonoBehaviour
             {
                 SpawnGhostBall();
             }
+            else if(rand < 2)
+            {
+                SpawnFatBall();
+            }
             else
             {
                 SpawnNormalBall();
@@ -83,7 +88,7 @@ public class Node : MonoBehaviour
     }
     void SpawnNormalBall()
     {
-        myBall.ToAwakeAnimation();
+        // myBall.ToAwakeAnimation();
         status = STATUS.Holding;
         myBall.SetMyStand(GetComponent<Node>());
         nextSpawnBall = null;
@@ -99,10 +104,27 @@ public class Node : MonoBehaviour
         nextSpawnBall = null;
         myBall.gameObject.SetActive(true);
     }
+    void SpawnFatBall()
+    {
+        myBall = Instantiate(fat, transform.position, transform.rotation);
+        myBall.SetColor(nextSpawnBall.myColor);
+        status = STATUS.Holding;
+        myBall.SetMyStand(GetComponent<Node>());
+        nextSpawnBall = null;
+        myBall.gameObject.SetActive(true);
+    }
     public void Score()
     {
         if(myBall)
-            myBall.Score();
+        {
+            if (!isClassic && myBall.GetComponent<FatBall>())
+            {
+                myBall.GetComponent<FatBall>().Score();
+                DataController.datacontroller.AddScore(1);
+                return;
+            }
+            myBall.Score(); //delete fat 
+        }
         status = STATUS.Idle;
         myBall = null;
         DataController.datacontroller.AddScore(1);
