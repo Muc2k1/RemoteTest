@@ -181,3 +181,4 @@ MonoBehaviour:
   isAcceptByRouter: 0
   sign: {fileID: 4236313788112321421}
   ghost: {fileID: 8860939272847013704, guid: f1fdda5304eb23c4d85ded76df728d62, type: 3}
+  fat: {fileID: 7800712934604674078, guid: 4329283df2c995747be48d47d05c5a05, type: 3}

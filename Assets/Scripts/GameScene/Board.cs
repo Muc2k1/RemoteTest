@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 //Debug
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,8 @@ public class Board : MonoBehaviour
     private int maxBallCanSpawn = 3;
 
     private bool isClassic = true;
+
+    public GameObject nextButton;
     // Start is called before the first frame update
     void Awake()
     {
@@ -264,6 +267,17 @@ public class Board : MonoBehaviour
             selectingBall.GetComponent<GhostBall>().Move();
         }
         else selectingBall.Move();
+    }
+    public void NextTurn()
+    {
+        Board.mainBoard.SpawnBalls();
+        Board.mainBoard.SetSpawnQueue();
+        nextButton.GetComponent<Image>().raycastTarget = false;
+        Invoke("NextButtonRecover", 1f);
+    }
+    void NextButtonRecover()
+    {
+        nextButton.GetComponent<Image>().raycastTarget = true;
     }
     public void UnselectBall()
     {
