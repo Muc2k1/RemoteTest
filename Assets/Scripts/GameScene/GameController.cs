@@ -120,12 +120,12 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= x_step_must_check_down; i++)
         {
-            if(board.nodes[x+i,y].HasHolding())
+            if(Board.mainBoard.nodes[x+i,y].HasHolding())
             {
-                if(board.nodes[x+i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x+i,y].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x+i,y];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x+i,y];
                 }
                 else i = x_step_must_check_down;
             }
@@ -133,12 +133,12 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= x_step_must_check_up; i++)
         {
-            if(board.nodes[x-i,y].HasHolding())
+            if(Board.mainBoard.nodes[x-i,y].HasHolding())
             {
-                if(board.nodes[x-i,y].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x-i,y].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x-i,y];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x-i,y];
                 }
                 else i = x_step_must_check_up;
             }
@@ -176,12 +176,12 @@ public class GameController : MonoBehaviour
 
         for(int i = 1; i <= step_must_check_ul; i++)
         {
-            if(board.nodes[x-i,y-i].HasHolding())
+            if(Board.mainBoard.nodes[x-i,y-i].HasHolding())
             {
-                if(board.nodes[x-i,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x-i,y-i].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x-i,y-i];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x-i,y-i];
                 }
                  else i = step_must_check_ul;
             }
@@ -189,12 +189,12 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= step_must_check_dr; i++)
         {
-            if(board.nodes[x+i,y+i].HasHolding())
+            if(Board.mainBoard.nodes[x+i,y+i].HasHolding())
             {
-                if(board.nodes[x+i,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x+i,y+i].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x+i,y+i];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x+i,y+i];
                 }
                  else i = step_must_check_dr;
             }
@@ -232,12 +232,12 @@ public class GameController : MonoBehaviour
 
         for(int i = 1; i <= step_must_check_ur; i++)
         {
-            if(board.nodes[x-i,y+i].HasHolding())
+            if(Board.mainBoard.nodes[x-i,y+i].HasHolding())
             {
-                if(board.nodes[x-i,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x-i,y+i].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x-i,y+i];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x-i,y+i];
                 }
                 else i = step_must_check_ur;
             }
@@ -245,12 +245,12 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= step_must_check_dl; i++)
         {
-            if(board.nodes[x+i,y-i].HasHolding())
+            if(Board.mainBoard.nodes[x+i,y-i].HasHolding())
             {
-                if(board.nodes[x+i,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x+i,y-i].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x+i,y-i];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x+i,y-i];
                 }
                 else i = step_must_check_dl;
             }
@@ -273,12 +273,12 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= y_step_must_check_right; i++)
         {
-            if(board.nodes[x,y+i].HasHolding())
+            if(Board.mainBoard.nodes[x,y+i].HasHolding())
             {
-                if(board.nodes[x,y+i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x,y+i].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x,y+i];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x,y+i];
                 }
                 else i = y_step_must_check_right;
             }
@@ -286,12 +286,12 @@ public class GameController : MonoBehaviour
         }
         for(int i = 1; i <= y_step_must_check_left; i++)
         {
-            if(board.nodes[x,y-i].HasHolding())
+            if(Board.mainBoard.nodes[x,y-i].HasHolding())
             {
-                if(board.nodes[x,y-i].GetMyBall().myColor == board.nodes[x,y].GetMyBall().myColor)
+                if(Board.mainBoard.nodes[x,y-i].GetMyBall().myColor == Board.mainBoard.nodes[x,y].GetMyBall().myColor)
                 {
                     Array.Resize(ref res, res.Length + 1);
-                    res[res.Length - 1] = board.nodes[x,y-i];
+                    res[res.Length - 1] = Board.mainBoard.nodes[x,y-i];
                 }
                 else i = y_step_must_check_left;
             }

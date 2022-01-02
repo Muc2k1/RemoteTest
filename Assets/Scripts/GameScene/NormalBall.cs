@@ -105,8 +105,13 @@ public class NormalBall : MonoBehaviour
     {
         myStand.status = Node.STATUS.Idle;
         myStand.SetMyBall(null);
+
         myStand = target;
         myStand.SetMyBall(this.GetComponent<NormalBall>());
+        if(myStand.nextSpawnBall)
+        {
+            BallPool.GiveBackBall(target.nextSpawnBall);
+        }
         myStand.status = Node.STATUS.Holding;
         target = null;
 
