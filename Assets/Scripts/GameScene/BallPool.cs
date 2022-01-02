@@ -17,13 +17,14 @@ public class BallPool : MonoBehaviour
     static public NormalBall TakeMyBall()
     {
         for (int i = 0; i < MAX_BALLS_IN_POOL; i++)
-        {
+        {     
             if(Balls[i].status == NormalBall.STATUS.Idle)
             {
                 Balls[i].status = NormalBall.STATUS.Using;
                 return Balls[i];
-            }                
+            }       
         }
+        print("Out of pool");
         return null;
     }
     static public void GiveBackBall(NormalBall Ball)

@@ -19,14 +19,15 @@ public class Board : MonoBehaviour
     private bool isClassic = true;
 
     public GameObject nextButton;
+    public GameObject sceneChanger;
     // Start is called before the first frame update
     void Awake()
     {
         mainBoard = this;
-        initNodes();
     }
     void Start()
     {
+        initNodes();
         isClassic = (PlayerPrefs.GetString("GameMode") == "Classic");
         SetSpawnQueue();
         SpawnBalls();
@@ -36,7 +37,7 @@ public class Board : MonoBehaviour
     {
         DataController.datacontroller.CheckScore();
         //Debug
-        SceneManager.LoadScene(2);
+        sceneChanger.GetComponent<MainMenu>().LoadSceneIndex(2);
     }
     public void SetSpawnQueue()
     {
@@ -52,7 +53,7 @@ public class Board : MonoBehaviour
                 looseConditionCount++;
             }
         }
-        maxBallCanSpawn = looseConditionCount;
+        // maxBallCanSpawn = looseConditionCount;
         if(looseConditionCount == 0)
         {
             Loose();
@@ -84,7 +85,7 @@ public class Board : MonoBehaviour
             }
             node.SetToDefaultSign();
         }
-        if (spawnCount < maxBallCanSpawn)
+        if (spawnCount < 3)
         {
             Node randomSubNode = ChooseRandomIdleNode();
             if (!randomSubNode)
@@ -110,7 +111,7 @@ public class Board : MonoBehaviour
         Node[] idleNodes = new Node[0];
         foreach(Node node in nodes)
         {
-            if(node.status == Node.STATUS.Idle || node.status == Node.STATUS.SubSpawn)
+            if(node.status == Node.STATUS.Idle)
             {
                 Array.Resize(ref idleNodes, idleNodes.Length + 1);
                 idleNodes[idleNodes.Length - 1] = node;
@@ -270,10 +271,13 @@ public class Board : MonoBehaviour
     }
     public void NextTurn()
     {
-        Board.mainBoard.SpawnBalls();
-        Board.mainBoard.SetSpawnQueue();
-        nextButton.GetComponent<Image>().raycastTarget = false;
-        Invoke("NextButtonRecover", 1f);
+        if(GameController.turn == 1)
+        {
+            Board.mainBoard.SpawnBalls();
+            Board.mainBoard.SetSpawnQueue();
+            nextButton.GetComponent<Image>().raycastTarget = false;
+            Invoke("NextButtonRecover", 1f);
+        }
     }
     void NextButtonRecover()
     {

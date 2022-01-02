@@ -16,7 +16,7 @@ public class Node : MonoBehaviour
     public Node previousNode = null;
 
     private NormalBall myBall = null;
-    private NormalBall nextSpawnBall = null;
+    public NormalBall nextSpawnBall = null;
 
     public bool isAcceptByRouter = false;
 
@@ -64,7 +64,7 @@ public class Node : MonoBehaviour
     public void SpawnBall()
     {
         myBall = nextSpawnBall;
-        if(!isClassic)
+        if(!isClassic && myBall)
         {
             int rand = (int)Random.Range(0f,20f);
             if(rand < 1)
@@ -101,6 +101,7 @@ public class Node : MonoBehaviour
         myBall.SetColor(nextSpawnBall.myColor);
         status = STATUS.Holding;
         myBall.SetMyStand(GetComponent<Node>());
+        BallPool.GiveBackBall(nextSpawnBall);
         nextSpawnBall = null;
         myBall.gameObject.SetActive(true);
     }
@@ -110,6 +111,7 @@ public class Node : MonoBehaviour
         myBall.SetColor(nextSpawnBall.myColor);
         status = STATUS.Holding;
         myBall.SetMyStand(GetComponent<Node>());
+        BallPool.GiveBackBall(nextSpawnBall);
         nextSpawnBall = null;
         myBall.gameObject.SetActive(true);
     }
