@@ -36,6 +36,7 @@ public class GameController : MonoBehaviour
     {
         isClassic = (PlayerPrefs.GetString("GameMode") == "Classic");
         // Time.timeScale = 3;
+        SoundSource.PlaySound("welcome");
     }
     void Update()
     {
